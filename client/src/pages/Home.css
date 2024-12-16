@@ -1,0 +1,76 @@
+/* General Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto; /* Center the container */
+    padding: 0 15px; /* Add padding to prevent content from touching the edges */
+}
+
+h2 {
+    font-weight: bold;
+    color: #333;
+    text-align: center; /* Center align headings */
+    margin-bottom: 20px; /* Add spacing below headings */
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.8; /* Adjust line height for readability */
+    color: #555;
+    text-align: justify; /* Justify the text */
+    margin-bottom: 15px; /* Add spacing between paragraphs */
+}
+
+/* Section Styles */
+section {
+    margin-bottom: 60px; /* Add spacing between sections */
+}
+
+.row {
+    align-items: center;
+    margin-bottom: 30px; /* Add spacing between rows */
+}
+
+.col-md-6 {
+    padding: 15px; /* Add padding inside each column */
+}
+
+.img-fluid {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Ensure images don't overflow */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Add rounded corners to images */
+}
+
+/* Consistent Layout for Images and Text */
+.align-items-center .col-md-6 {
+    display: flex;
+    justify-content: center; /* Center-align images and text horizontally */
+    flex-direction: column; /* Stack content vertically within columns */
+}
+
+/* Section Headings */
+section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px; /* Add space below headings */
+    text-align: left; /* Align headings to the left */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column; /* Stack columns vertically on smaller screens */
+        text-align: center; /* Center-align text on smaller screens */
+    }
+
+    .col-md-6 {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    h2 {
+        font-size: 1.5rem; /* Reduce font size for headings */
+    }
+
+    p {
+        font-size: 0.9rem; /* Adjust font size for smaller screens */
+    }
+}

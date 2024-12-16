@@ -1,0 +1,26 @@
+/* Logo Styling */
+.logo {
+    height: 50px; /* Adjust the logo size */
+    width: auto; /* Maintain aspect ratio */
+}
+
+/* Brand Text Styling */
+.brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Gradient color */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+}
+
+/* Shopping Cart Button */
+.cart-button {
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+}
