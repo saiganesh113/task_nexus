@@ -1,34 +1,50 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const cors = require('cors'); // Import CORS
+const cors = require('cors'); 
 const app = express();
 const port = 5000;
 
 // Middleware
-app.use(cors()); // Enable CORS
+app.use(cors());
 
-// Import your Mongoose models
+// Import Models
 const Ingredient = require('./models/ingredientModel');
 const Pizza = require('./models/pizzaModel');
 
+// Import Data Synchronization Function
+const synchronizeData = require('./setup/setup');
+
 // MongoDB connection URI
-const mongoURI = 'mongodb://localhost:27017/pizzaDatabase'; // Replace with your database name
+const mongoURI = 'mongodb://127.0.0.1:27017/task_nexus';
 
 // Connect to MongoDB
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB successfully');
+    
+    // Run Data Synchronization
+    await synchronizeData();
   })
   .catch(err => {
     console.error('Error connecting to MongoDB:', err);
-    process.exit(1); // Exit if connection fails
+    process.exit(1);
   });
 
-// Define API endpoints
+// API Endpoints
 
+// Synchronize data on demand
+app.post('/api/synchronize', async (req, res) => {
+    try {
+      await synchronizeData();
+      res.status(200).json({ message: 'Data synchronization completed successfully.' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error during data synchronization', error: error.message });
+    }
+  });
+  
 // Get all ingredients
 app.get('/api/ingredients', async (req, res) => {
   try {
@@ -49,7 +65,7 @@ app.get('/api/pizzas', async (req, res) => {
   }
 });
 
-// Close the MongoDB connection when server shuts down
+// Close MongoDB connection on server shutdown
 process.on('SIGINT', () => {
   mongoose.connection.close(() => {
     console.log('MongoDB connection closed due to app termination');

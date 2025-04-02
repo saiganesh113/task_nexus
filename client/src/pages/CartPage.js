@@ -29,50 +29,30 @@ const CartPage = () => {
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">Cart Items</h2>
-
+  
       {/* Build Pizza Section */}
-      <div className="mt-4">
+      <div className="mt-3">
         <h3>Build Pizza</h3>
         {buildPizzas.length > 0 ? (
           <div className="row">
             {buildPizzas.map((item) => (
-              <div key={item.id} className="col-md-6 mb-4">
+              <div key={item.id} className="col-md-6 col-lg-6 mb-4"> {/* Two per row */}
                 <div className="card">
-                  <img
-                    src={download}
-                    alt={item.name}
-                    className="card-img-top"
-                    style={{ height: "150px", objectFit: "cover" }}
-                  />
+                  <img src={download} alt={item.name} className="card-img-top" style={{ height: "150px", objectFit: "cover" }} />
                   <div className="card-body">
                     <h5 className="card-title">{item.name}</h5>
                     <p className="card-text">
                       Ingredients: {item.selectedIngredients?.join(", ") || "None"} <br />
                       <div className="d-flex align-items-center">
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleQuantityChange(item.id, "decrement")}
-                        >
-                          -
-                        </button>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => handleQuantityChange(item.id, "decrement")}>-</button>
                         <span className="mx-2">{item.quantity || 1}</span>
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleQuantityChange(item.id, "increment")}
-                        >
-                          +
-                        </button>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => handleQuantityChange(item.id, "increment")}>+</button>
                       </div>
                       <br />
                       Price (each): ₹{item.price} <br />
                       Total: ₹{item.price * (item.quantity || 1)}
                     </p>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      Remove
-                    </button>
+                    <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>Remove</button>
                   </div>
                 </div>
               </div>
@@ -83,50 +63,30 @@ const CartPage = () => {
         )}
         <h4>Total (Build Pizza): ₹{buildTotal}</h4>
       </div>
-
+  
       {/* Order Pizza Section */}
-      <div className="mt-4">
+      <div className="mt-3">
         <h3>Order Pizza</h3>
         {orderPizzas.length > 0 ? (
           <div className="row">
             {orderPizzas.map((item) => (
-              <div key={item.id} className="col-md-6 mb-4">
+              <div key={item.id} className="col-md-6 col-lg-6 mb-4"> {/* Two per row */}
                 <div className="card">
-                  <img
-                    src={item.image || "/default-pizza.jpg"} // Default image if none provided
-                    alt={item.name}
-                    className="card-img-top"
-                    style={{ height: "150px", objectFit: "cover" }}
-                  />
+                  <img src={item.image || "/default-pizza.jpg"} alt={item.name} className="card-img-top" style={{ height: "150px", objectFit: "cover" }} />
                   <div className="card-body">
                     <h5 className="card-title">{item.name}</h5>
                     <p className="card-text">
                       <div className="d-flex align-items-center">
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleQuantityChange(item.id, "decrement")}
-                        >
-                          -
-                        </button>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => handleQuantityChange(item.id, "decrement")}>-</button>
                         <span className="mx-2">{item.quantity || 1}</span>
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => handleQuantityChange(item.id, "increment")}
-                        >
-                          +
-                        </button>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => handleQuantityChange(item.id, "increment")}>+</button>
                       </div>
                       <br />
                       Quantity: {item.quantity || 1} <br />
                       Price (each): ₹{item.price} <br />
                       Total: ₹{item.price * (item.quantity || 1)}
                     </p>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      Remove
-                    </button>
+                    <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>Remove</button>
                   </div>
                 </div>
               </div>
@@ -137,13 +97,14 @@ const CartPage = () => {
         )}
         <h4>Total (Order Pizza): ₹{orderTotal}</h4>
       </div>
-
+  
       {/* Grand Total */}
       <div className="text-center mt-4">
         <h3>Grand Total: ₹{grandTotal}</h3>
       </div>
     </div>
   );
+  
 };
 
 export default CartPage;

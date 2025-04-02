@@ -1,20 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
 import "./BuildPizza.css";
 
+const initialState = {
+    ingredientsList: [],
+    selectedIngredients: [],
+    totalCost: 0,
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "SET_INGREDIENTS":
+            return { ...state, ingredientsList: action.payload };
+        case "ADD_INGREDIENT":
+            if (state.selectedIngredients.find((ing) => ing.id === action.payload.id)) {
+                return state;
+            }
+            return {
+                ...state,
+                selectedIngredients: [...state.selectedIngredients, action.payload],
+                totalCost: state.totalCost + action.payload.price,
+            };
+        case "REMOVE_INGREDIENT":
+            return {
+                ...state,
+                selectedIngredients: state.selectedIngredients.filter((ing) => ing.id !== action.payload.id),
+                totalCost: state.totalCost - action.payload.price,
+            };
+        case "RESET_SELECTION":
+            return { ...state, selectedIngredients: [], totalCost: 0 };
+        default:
+            return state;
+    }
+};
+
 const BuildPizza = () => {
-    const [ingredientsList, setIngredientsList] = useState([]);
-    const [selectedIngredients, setSelectedIngredients] = useState([]);
-    const [totalCost, setTotalCost] = useState(0);
+    const [state, dispatch] = useReducer(reducer, initialState);
     const { addToCart } = useCart();
 
     useEffect(() => {
-        // Fetch ingredients from API
         const fetchIngredients = async () => {
             try {
                 const response = await axios.get("http://localhost:5000/api/ingredients");
-                setIngredientsList(response.data);
+                dispatch({ type: "SET_INGREDIENTS", payload: response.data });
             } catch (error) {
                 console.error("Error fetching ingredients:", error);
             }
@@ -23,33 +52,26 @@ const BuildPizza = () => {
     }, []);
 
     const handleAddIngredient = (ingredient) => {
-        if (!selectedIngredients.find((ing) => ing.id === ingredient.id)) {
-            setSelectedIngredients([...selectedIngredients, ingredient]);
-            setTotalCost((prevTotalCost) => prevTotalCost + ingredient.price);
-        }
+        dispatch({ type: "ADD_INGREDIENT", payload: ingredient });
     };
 
     const handleRemoveIngredient = (ingredient) => {
-        setSelectedIngredients((prevIngredients) =>
-            prevIngredients.filter((ing) => ing.id !== ingredient.id)
-        );
-        setTotalCost((prevTotalCost) => prevTotalCost - ingredient.price);
+        dispatch({ type: "REMOVE_INGREDIENT", payload: ingredient });
     };
 
     const handleAddToCart = () => {
         const pizza = {
             id: Date.now(),
             type: "build",
-            name: "Custom Pizza",
-            selectedIngredients: selectedIngredients.map((ing) => ing.name), // Use "name" for ingredients
-            price: totalCost,
+            tname: "Custom Pizza",
+            selectedIngredients: state.selectedIngredients.map((ing) => ing.tname),
+            price: state.totalCost,
             quantity: 1,
         };
 
         addToCart(pizza);
         alert("Custom Pizza added to cart!");
-        setSelectedIngredients([]);
-        setTotalCost(0);
+        dispatch({ type: "RESET_SELECTION" });
     };
 
     return (
@@ -66,21 +88,21 @@ const BuildPizza = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {ingredientsList.map((ingredient) => (
+                        {state.ingredientsList.map((ingredient) => (
                             <tr key={ingredient.id}>
                                 <td>
                                     <img
                                         src={ingredient.image}
-                                        alt={ingredient.name}
+                                        alt={ingredient.tname}
                                         style={{ width: "50px", height: "50px" }}
                                     />
                                 </td>
-                                <td>{ingredient.name}</td>
+                                <td>{ingredient.tname}</td>
                                 <td>₹{ingredient.price.toFixed(2)}</td>
                                 <td>
                                     <button
                                         onClick={() => handleAddIngredient(ingredient)}
-                                        disabled={selectedIngredients.find((ing) => ing.id === ingredient.id)}
+                                        disabled={state.selectedIngredients.find((ing) => ing.id === ingredient.id)}
                                         className="btn btn-sm btn-success"
                                     >
                                         Add
@@ -93,11 +115,11 @@ const BuildPizza = () => {
             </div>
             <div className="mt-4">
                 <h4>Selected Ingredients:</h4>
-                {selectedIngredients.length > 0 ? (
+                {state.selectedIngredients.length > 0 ? (
                     <ul>
-                        {selectedIngredients.map((ingredient) => (
+                        {state.selectedIngredients.map((ingredient) => (
                             <li key={ingredient.id}>
-                                {ingredient.name} - ₹{ingredient.price.toFixed(2)}
+                                {ingredient.tname} - ₹{ingredient.price.toFixed(2)}
                                 <button
                                     onClick={() => handleRemoveIngredient(ingredient)}
                                     className="btn btn-sm btn-danger ml-2"
@@ -113,11 +135,11 @@ const BuildPizza = () => {
             </div>
             <div className="mt-4">
                 <p>
-                    <strong>Total Cost:</strong> ₹{totalCost.toFixed(2)}
+                    <strong>Total Cost:</strong> ₹{state.totalCost.toFixed(2)}
                 </p>
                 <button
                     onClick={handleAddToCart}
-                    disabled={selectedIngredients.length === 0}
+                    disabled={state.selectedIngredients.length === 0}
                     className="btn btn-primary"
                 >
                     Add to Cart
